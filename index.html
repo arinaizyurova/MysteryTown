@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Тайны городка</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: white; padding: 10px; }
+        .game { display: flex; gap: 30px; align-items: flex-start; }
+        .panel, .messages, .dice-panel { background: white; border: 1px solid #999; padding: 15px; }
+        .panel { width: 160px; }
+        .pieces { display: flex; flex-wrap: wrap; gap: 10px; min-height: 80px; }
+        .piece { width: 24px; height: 24px; border: 2px solid #333; cursor: grab; flex-shrink: 0; }
+        #piece1 { background: tomato; border-radius: 50%; }
+        #piece2 { background: royalblue; }
+        #piece3 { background: gold; border-radius: 8px; }
+        #board { position: relative; width: 540px; height: 540px; flex-shrink: 0; border: 1px solid #555; }
+        .cell { position: absolute; width: 90px; height: 90px; border: 1px solid #555; display: flex; flex-wrap: wrap; align-content: flex-end; justify-content: center; padding: 22px 2px 3px; box-sizing: border-box; background: white; }
+        .cell-name { position: absolute; top: 15px; left: 2px; right: 2px; text-align: center; font-size: 10px; line-height: 11px; pointer-events: none; }
+        .corner { background: #eee; }
+        .center { position: absolute; top: 160px; left: 80px; right: 80px; text-align: center; font-size: 14px; }
+        .game { overflow-x: auto; padding-bottom: 10px; }
+        .cell-number { position: absolute; top: 2px; left: 4px; font-size: 10px; color: #555; pointer-events: none; }
+        .special { background: #fff0bb; }
+        .over { background: #c9edff; }
+        .messages { margin-top: 12px; max-width: 420px; padding: 8px 10px; font-size: 13px; }
+        .messages p { margin: 5px 0 0; }
+        .dice-panel { margin-top: 20px; width: 180px; }
+        #dice { font-size: 32px; margin: 10px 0; }
+        button { padding: 8px 12px; cursor: pointer; }
+        body { background: #e6e3cd; color: #303d31; }
+        h1 { color: #354d38; }
+        .panel, .messages, .dice-panel { background: #fff9e5; border: 2px solid #6c7758; }
+        #board { background: #d3dec1; border: 3px solid #425a43; }
+        .cell { background: #faf4dc; border-color: #748166; }
+        .special { background: #f3dfa2; }
+        .corner { background: #bad0ac; }
+        .over { background: #b8dce5; }
+        .piece { width: 30px; height: 30px; border: 0; background: transparent !important; border-radius: 0 !important; }
+        .piece img { width: 30px; height: 30px; pointer-events: none; }
+        .pieces { gap: 12px; }
+        .center { top: 130px; left: 98px; right: 98px; }
+        .center svg { width: 280px; max-width: 100%; height: 165px; }
+        .center h2 { font-size: 19px; margin: 8px 0; }
+        .center p { font-size: 12px; }
+        .cell-name { font-size: 9px; }
+        button { background: #e1e9cf; border: 1px solid #748166; }
+    </style>
+</head>
+<body>
+    <h1>Тайны городка</h1>
+    <p>Перетащите фигурку на любую клетку поля.</p>
+    <div class="game">
+        <div class="panel">
+            <h3>Герои</h3>
+            <div class="pieces" id="start">
+                <div class="piece" id="piece1" draggable="true" title="Красная фигурка"></div>
+                <div class="piece" id="piece2" draggable="true" title="Синяя фигурка"></div>
+                <div class="piece" id="piece3" draggable="true" title="Жёлтая фигурка"></div>
+            </div>
+            <p>Диппер - в кепке, Мэйбл - в розовом, Стэн - в феске.</p>
+            <p>Бросьте кубик и перетащите героя на нужное число клеток. После 20-й клетки снова идёт первая.</p>
+            <button id="reset">Начать заново</button>
+        </div>
+        <div id="board">
+            <div class="center">
+                <svg viewBox="0 0 260 150" role="img" aria-label="Хижина чудес среди леса">
+                    <rect width="260" height="150" fill="#d3dec1"/>
+                    <circle cx="215" cy="28" r="17" fill="#fff3b0"/>
+                    <g fill="#577754" stroke="#405c40" stroke-width="2">
+                        <path d="M24 10 3 65h12L0 95h48L34 65h12Z"/>
+                        <path d="M239 8 215 65h12l-18 35h50l-15-35h14Z"/>
+                        <path d="M64 22 44 70h10l-14 30h46L72 70h12Z"/>
+                    </g>
+                    <path d="M0 138Q120 110 260 138v12H0" fill="#8d9e68"/>
+                    <path d="M66 75h130v62H66Z" fill="#ad8053" stroke="#594c37" stroke-width="3"/>
+                    <path d="m52 78 74-51 84 51Z" fill="#6e5946" stroke="#463e31" stroke-width="3"/>
+                    <path d="M76 91h28v24H76zm79 0h28v24h-28Z" fill="#f6da87" stroke="#594c37" stroke-width="3"/>
+                    <path d="M118 98h25v39h-25Z" fill="#614d38"/>
+                    <path d="M59 133h144v9H59Z" fill="#725d40"/>
+                    <rect x="86" y="62" width="92" height="22" fill="#eee0b0" stroke="#594c37" stroke-width="2"/>
+                    <text x="132" y="77" text-anchor="middle" font-family="Arial" font-size="11" fill="#493e2b">ХИЖИНА ЧУДЕС</text>
+                </svg>
+                <h2>ТАЙНЫ ГОРОДКА</h2>
+                <p>Исследуйте лес и находите загадки!<br>Начало - справа внизу.</p>
+            </div>
+        </div>
+    </div>
+    <div class="messages">
+        <strong>Сообщения:</strong>
+        <p id="message">Игра началась. Выберите фигурку.</p>
+    </div>
+    <div class="dice-panel">
+        <strong>Бросок кубика</strong>
+        <div id="dice">—</div>
+        <button id="roll">Бросить кубик</button>
+    </div>
+    <script>
+        const board = document.getElementById("board");
+        const message = document.getElementById("message");
+
+        // Координаты клеток: столбец и строка.
+        const positions = [];
+        // Обходим квадрат по часовой стрелке, начиная справа внизу.
+        for (let x = 5; x >= 0; x--) positions.push([x, 5]);
+        for (let y = 4; y >= 0; y--) positions.push([0, y]);
+        for (let x = 1; x <= 5; x++) positions.push([x, 0]);
+        for (let y = 1; y <= 4; y++) positions.push([5, y]);
+
+        const names = [
+            "Старт", "Улица 1", "Шанс", "Улица 2", "Налог",
+            "Тюрьма", "Улица 3", "Вокзал", "Шанс", "Улица 4",
+            "Стоянка", "Улица 5", "Налог", "Улица 6", "Вокзал",
+            "Отдых", "Улица 7", "Шанс", "Улица 8", "Улица 9"
+        ];
+
+        // Сообщения на специальных клетках.
+        const tasks = {
+            1: "Старт! Получите 200 монет.",
+            3: "Шанс: вы выиграли конкурс. Получите 100 монет.",
+            5: "Налог: заплатите 100 монет.",
+            6: "Тюрьма: пропустите ход.",
+            9: "Шанс: получите 50 монет.",
+            11: "Бесплатная стоянка.",
+            13: "Налог: заплатите 50 монет.",
+            16: "Отдых: пропустите ход.",
+            18: "Шанс: бросьте кубик ещё раз."
+        };
+
+        // Создаём игровое поле.
+        for (let i = 0; i < positions.length; i++) {
+            const cell = document.createElement("div");
+            const number = i + 1;
+            cell.className = "cell";
+            cell.style.left = positions[i][0] * 90 + "px";
+            cell.style.top = positions[i][1] * 90 + "px";
+            cell.dataset.number = number;
+
+            if (i % 5 === 0) {
+                cell.classList.add("corner");
+            }
+            const name = document.createElement("div");
+            name.className = "cell-name";
+            name.textContent = names[i];
+            cell.appendChild(name);
+
+            const label = document.createElement("span");
+            label.className = "cell-number";
+            label.textContent = number;
+            cell.appendChild(label);
+
+            if (tasks[number]) cell.classList.add("special");
+
+            cell.addEventListener("dragover", function(event) {
+                event.preventDefault();
+            });
+            cell.addEventListener("dragenter", function(event) {
+                event.preventDefault();
+                cell.classList.add("over");
+            });
+            cell.addEventListener("dragleave", function(event) {
+                if (!cell.contains(event.relatedTarget)) {
+                    cell.classList.remove("over");
+                }
+            });
+            cell.addEventListener("drop", function(event) {
+                event.preventDefault();
+                cell.classList.remove("over");
+                const id = event.dataTransfer.getData("text/plain");
+                const piece = document.getElementById(id);
+                if (!piece || !piece.classList.contains("piece")) return;
+                cell.appendChild(piece);
+                message.textContent = tasks[number] ||
+                    "Вы на клетке «" + names[i] + "» (" + number + ").";
+            });
+            board.appendChild(cell);
+        }
+
+        // При перетаскивании запоминаем идентификатор фигурки.
+        const pieces = document.querySelectorAll(".piece");
+        for (const piece of pieces) {
+            piece.addEventListener("dragstart", function(event) {
+                event.dataTransfer.setData("text/plain", piece.id);
+                event.dataTransfer.effectAllowed = "move";
+            });
+            piece.addEventListener("dragend", function() {
+                for (const cell of document.querySelectorAll(".cell")) {
+                    cell.classList.remove("over");
+                }
+            });
+        }
+
+        // Случайное целое число от 1 до 6.
+        document.getElementById("roll").addEventListener("click", function() {
+            const result = Math.floor(Math.random() * 6) + 1;
+            document.getElementById("dice").textContent = result;
+        });
+
+        // Возвращаем фигурки в исходную область.
+        document.getElementById("reset").addEventListener("click", function() {
+            const start = document.getElementById("start");
+            for (const piece of pieces) start.appendChild(piece);
+            message.textContent = "Игра началась. Выберите фигурку.";
+            document.getElementById("dice").textContent = "—";
+        });
+        // Меняем обычные клетки на места из мультфильма.
+        const places = [
+            "Хижина чудес", "Лес", "Дневник №3", "Озеро", "Ловушка гномов",
+            "Дом гномов", "Сувениры", "Кафе", "Загадка", "Пещера",
+            "Привал", "Бункер", "Поломка", "Водопад", "Башня",
+            "Портал", "Лесная тропа", "Странная находка", "Чердак", "Площадь"
+        ];
+        for (let i = 0; i < names.length; i++) names[i] = places[i];
+        for (const key in tasks) delete tasks[key];
+        Object.assign(tasks, {
+            1: "Вы вернулись в Хижину чудес. Начинается новое приключение!",
+            3: "Диппер нашёл страницу дневника. Бросьте кубик ещё раз.",
+            5: "Гномы устроили ловушку. Пропустите ход.",
+            6: "Вы нашли дом гномов. Не шумите!",
+            9: "Мэйбл разгадала загадку. Сделайте ещё один бросок.",
+            11: "Привал в лесу. Можно отдохнуть.",
+            13: "Фонарик сломался. Пропустите ход.",
+            16: "Портал открылся! Перетащите героя к Хижине чудес.",
+            18: "Стэн нашёл необычный сувенир. Бросьте кубик ещё раз."
+        });
+        const cells = document.querySelectorAll(".cell");
+        for (let i = 0; i < cells.length; i++) {
+            cells[i].querySelector(".cell-name").textContent = names[i];
+        }
+
+        // Небольшие рисунки героев: лицо, волосы и характерная одежда.
+        const portraits = [
+            '<path d="M8 44h48v20H8Z" fill="#e77754"/><path d="M8 44h12v20H8zm36 0h12v20H44Z" fill="#354b67"/><path d="M12 19q0-16 20-14t20 14v19H12" fill="#624533"/><ellipse cx="32" cy="30" rx="18" ry="20" fill="#f3cbab"/><path d="M12 19V9Q32-6 50 9v10Z" fill="#f5f0d9" stroke="#354b67" stroke-width="2"/><path d="M38 4q12 0 12 15H38Z" fill="#5797bf"/><path d="M8 19h48v5H8Z" fill="#5797bf"/><path d="m28 17 4-9 4 9h-3v3h-2v-3Z" fill="#3989a8"/>',
+            '<path d="M8 64V23Q8 0 32 1t24 22v41Z" fill="#724a32"/><ellipse cx="32" cy="29" rx="18" ry="21" fill="#f3cbab"/><path d="M11 20Q14 0 34 7l17 14-13-4-8-8-7 10Z" fill="#724a32"/><path d="M13 13Q30-2 51 12" fill="none" stroke="#bc58a5" stroke-width="5"/><path d="M13 48h38v16H13Z" fill="#e777ae"/><path d="m25 57 7-4 7 4" fill="none" stroke="#f6db69" stroke-width="3"/><path d="M25 57h14" stroke="#6ab9dd" stroke-width="3"/>',
+            '<path d="M7 64V47h50v17Z" fill="#333b43"/><path d="m24 47 8 17 8-17Z" fill="white"/><path d="m30 50 4 0 2 14h-8Z" fill="#a7433f"/><ellipse cx="32" cy="30" rx="20" ry="21" fill="#e5bc99"/><path d="M12 24h8v18h-8zm32 0h8v18h-8Z" fill="#c5c5bb"/><path d="M18 18 20 2h24l3 16Z" fill="#9c3e36"/><path d="M31 6h8l-5 5h6" fill="none" stroke="#e4c563" stroke-width="2"/><path d="M15 25h15v11H15zm19 0h15v11H34Z" fill="white" stroke="#333" stroke-width="3"/><path d="M30 29h4" stroke="#333" stroke-width="3"/><path d="M23 42q9 10 18 0" fill="white" stroke="#694b3c" stroke-width="2"/>'
+        ];
+        const heroes = ["Диппер", "Мэйбл", "Стэн"];
+        for (let i = 0; i < pieces.length; i++) {
+            const svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">' +
+                portraits[i] + '<circle cx="25" cy="29" r="2"/><circle cx="39" cy="29" r="2"/>' +
+                '</svg>';
+            const img = document.createElement("img");
+            img.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
+            img.alt = heroes[i];
+            img.draggable = false;
+            pieces[i].appendChild(img);
+            pieces[i].title = heroes[i];
+        }
+    </script>
+</body>
+</html>
